@@ -30,7 +30,7 @@ public:
    void Schedule(initializer_list<Task*> tasks);
 
    void run();
-   
+   void resize();
 private:
    vector<Task*> m_tasks;
    vector<bool> m_tasks_initialized;
@@ -70,6 +70,11 @@ void TaskScheduler<T>::run(){
    }
 }
 
+template<typename T>
+void TaskScheduler<T>::resize(){
+   m_tasks.shrink_to_fit();
+   m_tasks_initialized.shrink_to_fit();
+}
 
 
 
