@@ -11,7 +11,7 @@ struct Application {
     virtual void execute() = 0;
 
     template<typename TApplication, typename... TArgs>
-    class Runner final {
+    class Runner {
         static_assert(is_base_of_v<Application, TApplication>, "TApplication is not derived from Application class");
     public:
         Runner(TArgs&&... args) : _app(make_unique<TApplication>(args...))
