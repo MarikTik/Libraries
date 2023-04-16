@@ -1,22 +1,31 @@
 #ifndef APPLICATION_H_
 #define APPLICATION_H_
-#include <functional>
+#include <memory>
+#include <type_traits>
 
-struct Application{
-   
-   typedef std::function<bool()> condition;
-   void initialize();
-   void execute();
-   void sleep(condition sleepReason,
-              condition wakeUpReason);
-   void terminate(condition terminationReason);      
-  
+using namespace std;
 
-   Application& instance(){
-      static Application application;
-      return application;
-   }      
+struct Application {
 
+    virtual void initialize() = 0;
+    virtual void execute() = 0;
+
+    template<typename TApplication, typename... TArgs>
+    class Runner final {
+        static_assert(is_base_of_v<Application, TApplication>, "TApplication is not derived from Application class");
+    public:
+        Runner(TArgs&&... args) : _app(make_unique<TApplication>(args...))
+        {
+        }
+        virtual void start() {
+            _app->initialize();
+        }
+        virtual void run() {
+            _app->execute();
+        }
+    private:
+        unique_ptr<Application> _app;
+    };
 };
 
 #endif
